@@ -37,20 +37,28 @@ y = df["label"]
 
 print("================== 正在构建数据特征 ================")
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=41)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=41)
 
+
+print(X_train.shape)
+print(X_test.shape)
 # 网络构造
 network = models.Sequential()
 network.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
+network.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)))
 network.add(layers.MaxPooling2D((2, 2)))
+network.add(layers.Dropout(0.25))
+
+network.add(layers.Conv2D(64, (3, 3), activation='relu'))
 network.add(layers.Conv2D(64, (3, 3), activation='relu'))
 network.add(layers.MaxPooling2D((2, 2)))
-network.add(layers.Conv2D(64, (3, 3), activation='relu'))
+network.add(layers.Dropout(0.25))
 """
 添加flatten层，以及dense全连接层
 """
 network.add(layers.Flatten())
 network.add(layers.Dense(64, activation='relu'))
+network.add(layers.Dropout(0.25))
 network.add(layers.Dense(10, activation='softmax'))
 
 print(network.summary())
@@ -67,8 +75,8 @@ print(y_test.shape)
 # %%
 X_train = X_train.astype('float32') / 255
 X_test = X_test.astype('float32') / 255
-X_train = X_train.values.reshape((29400, 28, 28, 1))
-X_test = X_test.values.reshape((12600, 28, 28, 1))
+X_train = X_train.values.reshape((37800, 28, 28, 1))
+X_test = X_test.values.reshape((4200, 28, 28, 1))
 
 
 # lb = LabelBinarizer()
@@ -86,7 +94,7 @@ print(y_test.shape)
 
 # %%
 # train
-history = network.fit(X_train, y_train, epochs=100, shuffle=True, batch_size=128, validation_split=0.3)
+history = network.fit(X_train, y_train, epochs=200, shuffle=True, batch_size=128, validation_split=0.2)
 
 # test
 test_loss, test_acc = network.evaluate(X_test, y_test)
@@ -133,5 +141,4 @@ plt.title('Training and validation accuracy')
 plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.legend()
-
 plt.show()
