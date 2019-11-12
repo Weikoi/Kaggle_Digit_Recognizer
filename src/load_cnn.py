@@ -7,7 +7,7 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
-network = load_model('./dnn_model.h5')
+network = load_model('./cnn_model.h5')
 
 data_path = "../data/"
 
@@ -24,7 +24,7 @@ print(df_test.columns)
 
 result_columns = ["ImageId", "Label"]
 
-df_test = df_test.values.reshape((28000, 784 * 1))
+df_test = df_test.values.reshape((28000, 28, 28, 1))
 result = network.predict(df_test)
 
 print(result)
@@ -48,4 +48,4 @@ result_df = pd.DataFrame(result_dict)
 
 print(result_df)
 
-result_df.to_csv("submission.csv", index=False)
+result_df.to_csv("submission_cnn.csv", index=False)
