@@ -1,7 +1,6 @@
 # %%
 import pickle as pk
 import pandas as pd
-import pandas as pd
 import sys
 from xgboost import plot_importance
 import xgboost as xgb
@@ -35,14 +34,18 @@ print("================== 正在构建数据特征 ================")
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+print(X_train.shape)
+print(y_train.shape)
+print(X_test.shape)
+print(y_test.shape)
 # print("X_train 占用内存大小为：", round(sys.getsizeof(X_train) / 1024 / 1024, 2), "MB")
 
-
+#%%
 print("================== 正在构建模型 ===================")
 """
 选择训练模型
 """
-model = 'lr'
+model = 'xgb_gs'
 
 """
 逻辑回归 单次验证：
@@ -55,10 +58,10 @@ if model == 'lr':
     print("logistic regression:", accuracy_score(y_test, y_pred_lr))
 
 """
-随机森林 单次验证 score 0.7678
+随机森林 单次验证 score 0.9389285714285714
 """
 if model == 'rf':
-    rnd_clf = RandomForestClassifier(n_estimators=1200, max_leaf_nodes=38, n_jobs=-1)
+    rnd_clf = RandomForestClassifier(n_jobs=-1)
     rnd_clf.fit(X_train, y_train)
     y_pred_rf = rnd_clf.predict(X_test)
     print("RandomForest:", accuracy_score(y_test, y_pred_rf))
@@ -109,10 +112,11 @@ if model == 'ada_gs':
 
 """
 ada boost 单次验证
+0.8913095238095238
 """
 if model == 'ada':
     ada_clf = AdaBoostClassifier(
-        DecisionTreeClassifier(max_depth=3), algorithm="SAMME.R", n_estimators=1000, learning_rate=.7
+        DecisionTreeClassifier(max_depth=3), algorithm="SAMME.R"
     )
 
     ada_clf.fit(X_train, y_train)
